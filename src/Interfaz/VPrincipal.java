@@ -164,13 +164,13 @@ public class VPrincipal extends javax.swing.JFrame {
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
         // TODO add your handling code here:
-
+        jTextArea1.setText("");
         try {
             File txt, archivo;
             BufferedReader br;
             FileReader fr;
             JFileChooser guardar = new JFileChooser();
-            guardar.setApproveButtonText("Elegir txt");
+            guardar.setApproveButtonText("Abrir");
             guardar.showSaveDialog(null);
             txt = guardar.getSelectedFile();
             String txt1 = guardar.getSelectedFile().toString();
@@ -218,7 +218,7 @@ public class VPrincipal extends javax.swing.JFrame {
 
         File archiV = new File(ruta + "");
 
-        if (archiV != null && ruta != "") {
+        if (archiV != null && ruta != "" && ruta!=null) {
             BufferedWriter bw = null;
 
             try {
@@ -239,9 +239,9 @@ public class VPrincipal extends javax.swing.JFrame {
             }
             JOptionPane.showMessageDialog(null, "Archivo guardado");
             // TODO add your handling code here:
+        } else {
+            JOptionPane.showMessageDialog(null, "Archivo no guardado");
         }
-
-        JOptionPane.showMessageDialog(null, "Archivo no guardado");
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
