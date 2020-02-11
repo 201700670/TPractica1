@@ -39,6 +39,7 @@ public class AnalizadorTexto {
             //System.out.println("ESTO ES LO DE LA ENTRADA   "+ entrada.charAt(i));
             c = String.valueOf(entrada.charAt(i));
             d = entrada.charAt(i);
+
             columna++;
             switch (estado) {
                 case 0:
@@ -141,6 +142,12 @@ public class AnalizadorTexto {
                         auxLex = "";
                         estado = 3;/////////ESTE ME LLEVARA PARA LAS EXPRESIONE REGULARES CON SUS IDENTIFICADORES
                         break;
+                    }else if (c.equals("%")) {
+                        auxLex += c;
+                        addToken(Tipo.PORCENTAJE, auxLex, fila, columna);
+                        auxLex = "";
+                        estado = 4;
+                        break;
                     } else {
                         auxLex += c;
                         addError(Tipo.DESCONOCIDO, auxLex, "Caracter no definido", fila, columna);
@@ -208,7 +215,7 @@ public class AnalizadorTexto {
                     } else if (c.equals("\n")) {
                         columna = 0;
                         fila += 1;
-                        estado = 2;
+                        estado = 1;
                         auxLex = "";
                         break;
                     } else if (c.equals("\t") || c.equals("\r")) {
@@ -239,7 +246,7 @@ public class AnalizadorTexto {
 //9****************************************ESTEE CONTENDRA LOS IDENTIFICADORES Y LAS EXPRESIONES REGULARES****************************
                     if (c.equals(">")) {
                         auxLex += c;
-                        addToken(Tipo.RESERVADA, auxLex, fila, columna);
+                        addToken(Tipo.MAYOR, auxLex, fila, columna);
                         auxLex = "";
                         estado = 3;
                     } else if (c.equals(" ")) {
@@ -250,33 +257,39 @@ public class AnalizadorTexto {
                         addToken(Tipo.CONCATENACION, auxLex, fila, columna);
                         auxLex = "";
                         estado = 3;
-                    }else if (c.equals("|")) {
+                    } else if (c.equals("|")) {
                         auxLex += c;
                         addToken(Tipo.OR, auxLex, fila, columna);
                         auxLex = "";
                         estado = 3;
-                    }else if (c.equals("+")) {
+                    } else if (c.equals("+")) {
                         auxLex += c;
                         addToken(Tipo.SUMA, auxLex, fila, columna);
                         auxLex = "";
                         estado = 3;
-                    }else if (c.equals("*")) {
+                    } else if (c.equals("*")) {
                         auxLex += c;
                         addToken(Tipo.MULTIPLICACION, auxLex, fila, columna);
                         auxLex = "";
                         estado = 3;
-                    }else if (c.equals("?")) {
+                    } else if (c.equals("?")) {
                         auxLex += c;
                         addToken(Tipo.INTERROGACION, auxLex, fila, columna);
                         auxLex = "";
                         estado = 3;
-                    }else if (Character.isLetter(d)) {
+                    } else if (Character.isLetter(d)) {
                         auxLex += c;
                         estado = 3;
                     } else if (Character.isDigit(d)) {
                         auxLex += c;
                         estado = 3;
-                    }else if (c.equals("{")) {
+                    } else if (c.equals("\"")) {
+
+                        auxLex += c;
+                        addToken(Tipo.COMILLA, auxLex, fila, columna);
+                        auxLex = "";
+                        estado = 3;
+                    } else if (c.equals("{")) {
                         auxLex += c;
                         addToken(Tipo.LLAVEIZQ, auxLex, fila, columna);
                         auxLex = "";
@@ -289,16 +302,16 @@ public class AnalizadorTexto {
                         auxLex = "";
                         estado = 3;
                         break;
-                    }else if (c.equals(";")) {
+                    } else if (c.equals(";")) {
                         auxLex += c;
                         addToken(Tipo.PUNTOYCOMA, auxLex, fila, columna);
                         auxLex = "";
-                        estado = 3;
+                        estado = 1;
                         break;
                     } else if (c.equals("\n")) {
                         columna = 0;
                         fila += 1;
-                        estado = 3;
+                        estado = 1;
                         auxLex = "";
                         break;
                     } else if (c.equals("\t") || c.equals("\r")) {
@@ -315,12 +328,95 @@ public class AnalizadorTexto {
                         addToken(Tipo.MENOR, auxLex, fila, columna);
                         auxLex = "";
                         estado = 1;
+                    } else if (c.equals("%")) {
+                        auxLex += c;
+                        addToken(Tipo.MENOR, auxLex, fila, columna);
+                        auxLex = "";
+                        estado = 4;
+                        break;
+                    } else {
+                        auxLex += c;
+                        addToken(Tipo.CADENA, auxLex, fila, columna);
+                        auxLex = "";
+                        estado = 3;
+                    }
+                    break;
+                case 4:
+//********************************************************ESTE ESTADO SIRVE PARA LOS LEXEMAS******************************************
+                    if (c.equals("%")) {
+                        auxLex += c;
+                        addToken(Tipo.MENOR, auxLex, fila, columna);
+                        auxLex = "";
+                        estado = 4;
+                    } else if (c.equals(":")) {
+                        addToken(Tipo.IDENTIFICADOR, auxLex, fila, columna);
+                        auxLex += c;
+                        addToken(Tipo.DOSPUNTOS, auxLex, fila, columna);
+                        auxLex = "";
+                        estado = 4;
+                    } else if (Character.isLetter(d)) {
+                        auxLex += c;
+                        estado = 4;
+                    } else if (Character.isDigit(d)) {
+                        auxLex += c;
+                        estado = 4;
+                    } else if (c.equals("\"")) {
+                        auxLex += c;
+                        addToken(Tipo.COMILLA, auxLex, fila, columna);
+                        auxLex = "";
+                        estado = 4;
+                    } else if (c.equals(" ")) {
+                        columna += 1;
+                        estado = 4;
+                    } else if (c.equals("\n")) {
+                        columna = 0;
+                        fila += 1;
+                        estado = 4;
+                        auxLex = "";
+                        break;
+                    } else if (c.equals("\t") || c.equals("\r")) {
+                        fila += 1;
+                        estado = 4;
+                        auxLex = "";
+                    } else if (c.equals("/")) {
+                        auxLex += c;
+                        addToken(Tipo.DIVISION, auxLex, fila, columna);
+                        auxLex = "";
+                        estado = 1;
+                    } else if (c.equals("}")) {
+                        auxLex += c;
+                        addToken(Tipo.LLAVEDER, auxLex, fila, columna);
+                        auxLex = "";
+                        estado = 5;
+                    }else if (c.equals("<")) {
+                        auxLex += c;
+                        addToken(Tipo.MENOR, auxLex, fila, columna);
+                        auxLex = "";
+                        estado = 1;
+                    } else {
+                        auxLex += c;
+                        addToken(Tipo.CADENA, auxLex, fila, columna);
+                        auxLex = "";
+                        estado = 4;
+                    }
+                    break;
+                case 5:
+                    if (c.equals("\n")) {
+                        columna = 0;
+                        fila += 1;
+                        estado = 5;
+                        auxLex = "";
+                        break;
+                    } else if (c.equals("\t") || c.equals("\r")) {
+                        fila += 1;
+                        estado = 5;
+                        auxLex = "";
                     } else {
                         auxLex += c;
                         addError(Tipo.DESCONOCIDO, auxLex, "Caracter no definido", fila, columna);
-                        System.out.println("ERROR LEXICO3 CON: " + auxLex + " " + fila + "," + columna);
+                        System.out.println("ERROR LEXICO5 CON: " + auxLex + " " + fila + "," + columna);
                         auxLex = "";
-                        estado = 3;
+                        estado = 2;
                     }
                     break;
             }
