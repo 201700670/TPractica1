@@ -71,21 +71,20 @@ public class TablaTrancisiones {
         //este es para las columnas
         tabes[0][0] = "Estado";
         for (int j = 1; j < state.size(); j++) {
-            //tabes[0][j] = state.get(j).lexema;
+            tabes[0][j] = state.get(j).lexema;
             System.out.println(state.get(j).id + "  " + state.get(j).lexema + "  " + state.get(j).Siguientes + " ");
 
         }
         for (int j = 0; j < e.size(); j++) {
-            //tabes[j+1][0] = "S" + e.get(j).estado + " = {" + e.get(j).Siguientes + "}";
-            System.out.println(" Estados sin repetirse  " + e.get(j).estado + "  " + e.get(j).Siguientes);
+            tabes[j+1][0] = "S" + e.get(j).estado + " = {" + e.get(j).Siguientes + "}";
+            System.out.println(j+" , "+0+"    Estados sin repetirse  " + e.get(j).estado + "  " + e.get(j).Siguientes);
 
         }
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
-        for()
-        
         String[] inicial = n.getPrimeros().split(",");
         System.out.println("S" + (e.size() - 2) + "  " + n.getPrimeros());
-        tempi.add(new Estados("S" + (e.size() - 2), n.getInformacion(), n.getPrimeros(),""));
+        tempi.add(new Estados("S" + (e.size() - 2), n.getInformacion(), n.getPrimeros(), ""));
         contador = e.size() - 2;
 
         for (int u = 0; u < inicial.length; u++) {
@@ -94,7 +93,7 @@ public class TablaTrancisiones {
                 //System.out.println(inicial[u] + "    " + state.get(j).id);
                 if (inicial[u].equals(String.valueOf(state.get(j).id))) {
                     contador--;
-                    tempi.add(new Estados("S" + contador, state.get(j).lexema, state.get(j).Siguientes,n.getPrimeros()));
+                    tempi.add(new Estados("S" + contador, state.get(j).lexema, state.get(j).Siguientes, n.getPrimeros()));
                     NuevoEstado(new Estados("S" + contador, state.get(j).lexema, state.get(j).Siguientes, n.getPrimeros()), state);
                 }
 
@@ -104,12 +103,40 @@ public class TablaTrancisiones {
         contador = e.size() - 2;
         System.out.println("***************************************************************************************************");
         for (Estados ee : tempi) {
-            if(!ee.SnumeString.equals("S-1")&&!ee.SnumeString.equals("S-2")&&!ee.SnumeString.equals("S-3")&&!ee.SnumeString.equals("S-4")){
-            System.out.println(ee.SnumeString + " -> " + ee.lexema + "  ->  " + ee.Siguientes + "  ->  "+ee.perten);
-            
+            if (!ee.SnumeString.equals("S-1") && !ee.SnumeString.equals("S-2") && !ee.SnumeString.equals("S-3") && !ee.SnumeString.equals("S-4")) {
+                System.out.println(ee.SnumeString + " -> " + ee.lexema + "  ->  " + ee.Siguientes + "  ->  " + ee.perten);
+                for (int i = 1; i < e.size(); i++) {
+                    //tabes[0][j] = state.get(j).lexema;
+                    
+                    for (int j = 0; j < state.size(); j++) {
+                        
+                        
+                        if(e.get(i).Siguientes.equals(ee.Siguientes)){
+                            if(state.get(j).lexema.equals(ee.lexema)&& !ee.perten.equals("")){
+                                //System.out.println("filas   " + (i+1) + " columnas  " + (j)+"   "+ee.SnumeString);
+                                tabes[i+1][j] = ee.SnumeString;
+                            }
+                            else{
+                                 System.out.println("filas   " + (i+1) + " columnas  " + (j)+"   "+"nada");
+                                 tabes[i+1][j] = "";
+                            }
+                        }
+                        
+                    }
+                }
             }
         }
-
+        
+        for (int i = 0; i < e.size(); i++) {
+                    //tabes[0][j] = state.get(j).lexema;
+                    for (int j = 0; j < state.size(); j++) {
+                        if(tabes[i][j]==null){
+                            tabes[i][j]="";
+                        }
+                        System.out.println("DATO   "+tabes[i][j]);
+                    }
+        }
+        //new Imprimirtrancisiones(tabes, e.size(), state.size());
         return cadena;
     }
 
@@ -125,20 +152,20 @@ public class TablaTrancisiones {
                         if (contador > 0) {
                             System.out.println("hola2 ");
                             contador--;
-                            tempi.add(new Estados("S" + contador, state.get(j).lexema, state.get(j).Siguientes,state.get(j).Siguientes));
-                            NuevoEstado(new Estados("S" + contador, state.get(j).lexema, state.get(j).Siguientes,state.get(j).Siguientes), state);
+                            tempi.add(new Estados("S" + contador, state.get(j).lexema, state.get(j).Siguientes, state.get(j).Siguientes));
+                            NuevoEstado(new Estados("S" + contador, state.get(j).lexema, state.get(j).Siguientes, state.get(j).Siguientes), state);
                         } else {
                             System.out.println("hola1111");
-                            Estados temporalito=null;
+                            Estados temporalito = null;
                             for (Estados e : tempi) {
                                 //System.out.println( state.get(j).Siguientes+"   ????   "+ e.Siguientes);
                                 if (state.get(j).Siguientes.equals(e.Siguientes)) {
                                     if (!state.get(j).lexema.equals(e.lexema)) {
-                                        temporalito=new Estados(e.SnumeString, state.get(j).lexema, state.get(j).Siguientes,e.Siguientes);
+                                        temporalito = new Estados(e.SnumeString, state.get(j).lexema, state.get(j).Siguientes, e.Siguientes);
                                     }
                                 }
                             }
-                            if(temporalito!=null){
+                            if (temporalito != null) {
                                 tempi.add(temporalito);
                             }
                         }
